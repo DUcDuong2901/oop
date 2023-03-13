@@ -8,6 +8,7 @@
     <content url="jar://$MODULE_DIR$/../../stdlib.jar!/" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="peterphi.std.guice.stdlib.thymeleaf" level="project" />
+    <orderEntry type="library" name="stdlib" level="project" />
+    <orderEntry type="library" name="algs4" level="project" />
   </component>
 </module>
