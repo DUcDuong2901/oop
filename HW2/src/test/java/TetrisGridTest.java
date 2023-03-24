@@ -24,8 +24,8 @@ public class TetrisGridTest {
 		
 		TetrisGrid tetris = new TetrisGrid(before);
 		tetris.clearRows();
+		assertTrue(Arrays.deepEquals(after, tetris.getGrid()));
 
-		assertTrue( Arrays.deepEquals(after, tetris.getGrid()) );
 	}
 	
 }

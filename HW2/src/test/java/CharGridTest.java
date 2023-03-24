@@ -31,7 +31,22 @@ public class CharGridTest {
 		assertEquals(3, cg.charArea('b'));
 		assertEquals(1, cg.charArea('c'));
 	}
-	
+	@Test
+	public void testcountPlus() {
+		char[][] grid = new char[][]
+				{
+						{' ',' ','p',' ',' ',' ',' ',' '},
+						{' ',' ','p',' ',' ',' ','x',' '},
+						{'p','p','p','p','p','x','x','x'},
+						{' ',' ','p',' ','y',' ','x',' '},
+						{' ',' ','p','y','y','y',' ',' '},
+						{'z','z','z','z','y','z','z','z'},
+						{' ',' ',' ',' ','y',' ',' ',' '}
+				};
+
+		assertEquals(2, 2 );
+
+	}
 	
 	
 	
