@@ -34,6 +34,29 @@ public class Piece {
      * Makes its own copy of the array and the TPoints inside it.
      */
     public Piece(TPoint[] points) {
+        body = points.clone();
+        int maxX = 0, maxY = 0;
+        for(int i = 0; i < points.length; i++){
+            int x = points[i].x;
+            int y = points[i].y;
+            if(x > maxX)
+                maxX = x;
+            if(y > maxY)
+                maxY = y;
+        }
+        width = maxX + 1;
+        height = maxY + 1;
+        skirt = new int[width];
+
+
+        for(int i = 0; i < skirt.length; i++)
+            skirt[i] = height;
+
+        for(int i = 0; i < points.length; i++)
+            if(skirt[points[i].x] > points[i].y)
+                skirt[points[i].x] = points[i].y;
+
+        next = null;
         // YOUR CODE HERE
     }
 
@@ -47,10 +70,12 @@ public class Piece {
         this(parsePoints(points));
     }
 
+
     /**
      * Returns the width of the piece measured in blocks.
      */
     public int getWidth() {
+
         return width;
     }
 
@@ -85,8 +110,18 @@ public class Piece {
      * rotated from the receiver.
      */
     public Piece computeNextRotation() {
+        TPoint[] res = new TPoint[body.length];
+
+        for(int i = 0; i < body.length; i++){
+            int x = body[i].y - height + 1;
+            if(x < 0)
+                x *= -1;
+            res[i] = new TPoint(x, body[i].x);
+        }
+
+        return new Piece(res);
         // YOUR CODE HERE
-        return null; // YOUR CODE HERE
+         // YOUR CODE HERE
     }
 
     /**
@@ -96,6 +131,7 @@ public class Piece {
      * just returns null.
      */
     public Piece fastRotation() {
+
         return next;
     }
 
@@ -116,6 +152,12 @@ public class Piece {
         // (null will be false)
         if (!(obj instanceof Piece)) return false;
         Piece other = (Piece) obj;
+        for(int i = 0; i < this.body.length; i++)
+            for(int j = 0; j < other.body.length; j++)
+                if(this.body[i].equals(other.body[j]))
+                    break;
+                else if(j == other.body.length - 1 && !this.body[i].equals(other.body[j]))
+                    return false;
 
         // YOUR CODE HERE
         return true;
@@ -182,8 +224,19 @@ public class Piece {
 	 to the first piece.
 	*/
     private static Piece makeFastRotations(Piece root) {
-        // YOUR CODE HERE
-        return null; // YOUR CODE HERE
+        Piece curr = root;
+
+        return helper(root, curr);
+    }
+    private static Piece helper(Piece root, Piece curr){
+        curr.next = curr.computeNextRotation();
+
+        if(curr.next.equals(root)){
+            curr.next = root;
+            return curr.next;
+        }
+
+        return helper(root, curr.next);
     }
 
 
