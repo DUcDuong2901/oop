@@ -110,16 +110,19 @@ public class Piece {
      * rotated from the receiver.
      */
     public Piece computeNextRotation() {
-        TPoint[] res = new TPoint[body.length];
+        int newMaxX = height - 1;
 
-        for(int i = 0; i < body.length; i++){
-            int x = body[i].y - height + 1;
-            if(x < 0)
-                x *= -1;
-            res[i] = new TPoint(x, body[i].x);
+        TPoint[] rotatedPiecePoints = new TPoint[body.length];
+
+        for (int i = 0; i < body.length; i++) {
+            int rotatedX = newMaxX - body[i].y;
+            int rotatedY = body[i].x;
+
+            rotatedPiecePoints[i] = new TPoint(rotatedX, rotatedY);
         }
 
-        return new Piece(res);
+        return new Piece(rotatedPiecePoints);
+
         // YOUR CODE HERE
          // YOUR CODE HERE
     }
@@ -151,17 +154,15 @@ public class Piece {
         // standard equals() technique 2
         // (null will be false)
         if (!(obj instanceof Piece)) return false;
-        Piece other = (Piece) obj;
-        for(int i = 0; i < this.body.length; i++)
-            for(int j = 0; j < other.body.length; j++)
-                if(this.body[i].equals(other.body[j]))
-                    break;
-                else if(j == other.body.length - 1 && !this.body[i].equals(other.body[j]))
-                    return false;
+        Piece other = (Piece)obj;
 
         // YOUR CODE HERE
-        return true;
+        List<TPoint> thisBody = new ArrayList<TPoint>(Arrays.asList(getBody()));
+        List<TPoint> objBody = new ArrayList<TPoint>(Arrays.asList(other.getBody()));
+
+        return (thisBody.containsAll(objBody) && objBody.containsAll(thisBody));
     }
+
 
 
     // String constants for the standard 7 tetris pieces
@@ -224,20 +225,31 @@ public class Piece {
 	 to the first piece.
 	*/
     private static Piece makeFastRotations(Piece root) {
-        Piece curr = root;
+        Piece currentRotation = root.computeNextRotation();
 
-        return helper(root, curr);
-    }
-    private static Piece helper(Piece root, Piece curr){
-        curr.next = curr.computeNextRotation();
-
-        if(curr.next.equals(root)){
-            curr.next = root;
-            return curr.next;
+        //if even first rotation doesn't do anything
+        if (root.equals(currentRotation)) {
+            root.next = root;
+            return root;
+        } else {
+            root.next = currentRotation;
         }
 
-        return helper(root, curr.next);
+        while(true) {
+            Piece nextPiece = currentRotation.computeNextRotation();
+            if (!nextPiece.equals(root)) {
+                currentRotation.next = nextPiece;
+            } else {
+                currentRotation.next = root; //close chain of links
+                break;
+            }
+
+            currentRotation = nextPiece; //use next piece to repeat loop
+        }
+
+        return root;
     }
+
 
 
     /**

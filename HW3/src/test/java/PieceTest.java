@@ -2,7 +2,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import static org.junit.Assert.*;
+import java.util.*;
 
+import org.junit.*;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -119,33 +122,49 @@ public class PieceTest {
 
 
     @Test
-    public void testFastRotation_Equals() {
-        Piece[] piecesArray = new Piece[]{
-                new Piece(Piece.STICK_STR),
-                new Piece(Piece.L1_STR),
-                new Piece(Piece.L2_STR),
-                new Piece(Piece.S1_STR),
-                new Piece(Piece.S2_STR),
-                new Piece(Piece.SQUARE_STR),
-                new Piece(Piece.PYRAMID_STR)
-        };
+    public void testEquals() {
+        String string1 = "0 1	1 1  1 0  2 0";
+        String string2 = "1 1  2 0  0 1  1 0";
+        assertTrue(new Piece(string1).equals(new Piece(string2)));
+
+        String string3 = "0 1	1 1  1 0  2 0";
+        String string4 = "1 1  2 0  0 1  3 0";
+        assertFalse(new Piece(string3).equals(new Piece(string4)));
+
+        String string5 = "0 1	1 1  1 0  2 0";
+        String string6 = "1 1  2 0  0 1";
+        assertFalse(new Piece(string5).equals(new Piece(string6)));
+
+        String string7 = "0 0	0 1  0 2  0 3";
+        String string8 = "0 3  0 2  0 1  0 0";
+        assertTrue(new Piece(string7).equals(new Piece(string8)));
+
+
+        Piece l = new Piece(Piece.STICK_STR);
+        Piece lTurn1 = l.computeNextRotation();
+        Piece lTurn2 = lTurn1.computeNextRotation();
+
+        assertFalse(l.equals(lTurn1));
+        assertTrue(l.equals(lTurn2));
+
+    }
+    @Test
+    public void testGetPiecesAndFastRotation() {
+        Piece[] pieces = Piece.getPieces();
+        assertEquals("Size of pieces: " + pieces.length, 7, pieces.length);
+
+
+        Random rd = new Random();
+        Piece rdPiece = pieces[rd.nextInt(pieces.length)];
+
+
+        Piece fastRotated = rdPiece.fastRotation();
+        Piece normalRotated = rdPiece.computeNextRotation();
+
+        assertTrue(fastRotated.equals(normalRotated));
+
+    }
 
 
 
-        assertTrue(!piecesArray[1].fastRotation().equals(piecesArray[1]));
-        assertTrue(!piecesArray[2].fastRotation().equals(piecesArray[2]));
-        assertTrue(!piecesArray[3].fastRotation().equals(piecesArray[3]));
-        assertTrue(!piecesArray[4].fastRotation().equals(piecesArray[4]));
-        assertTrue(!piecesArray[6].fastRotation().equals(piecesArray[6]));
-
-
-        assertTrue(!piecesArray[1].fastRotation().fastRotation().equals(piecesArray[1]));
-        assertTrue(!piecesArray[2].fastRotation().fastRotation().equals(piecesArray[2]));
-        assertTrue(!piecesArray[6].fastRotation().fastRotation().equals(piecesArray[6]));
-
-        assertTrue(!piecesArray[1].fastRotation().fastRotation().fastRotation().equals(piecesArray[1]));
-        assertTrue(!piecesArray[2].fastRotation().fastRotation().fastRotation().equals(piecesArray[2]));
-        assertTrue(!piecesArray[6].fastRotation().fastRotation().fastRotation().equals(piecesArray[6]));
-
-        }
 }
